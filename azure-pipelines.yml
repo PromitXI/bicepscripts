@@ -1,0 +1,24 @@
+trigger:
+- master
+
+name: Deploy Bicep files
+
+variables:
+  vmImageName: 'ubuntu-latest'
+
+  azureServiceConnection: 'QAIASDeploy'
+  resourceGroupName: 'Thursday-RG'
+  location: 'West US 3'
+  templateFile: 'main.bicep'
+
+steps:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: $(azureServiceConnection)
+    scriptType: bash
+    scriptLocation: inlineScript
+    useGlobalConfig: false
+    inlineScript: |
+      az --version
+      
+      az deployment group create --resource-group $(resourceGroupName) --template-file $(templateFile) --parameters sqlServerAdministratorLogin=$(sqlServerAdministratorLogin) sqlServerAdministratorLoginPassword=$(sqlServerAdministratorLoginPassword)
